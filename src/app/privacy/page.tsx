@@ -18,12 +18,12 @@ export default function Page() {
       <h2>6. Your Rights (Australia)</h2>
       <p>Under the Privacy Act 1988 (Cth) you may request access to, correction of, or deletion of your personal information. Email us and we will respond within 30 days.</p>
       <h2>7. Deleting Your Data</h2>
-      <p>Delete any gallery at any time — files are removed permanently. To delete your entire account and all stored data, email <a href="mailto:studio@wispersofthepast.com" style={{color:'#C9A227'}}>studio@wispersofthepast.com</a> from your registered address.</p>
+      <p>Delete any gallery at any time — files are removed permanently. To delete your entire account and all stored data, email <a href="mailto:wispersofthepastprints@gmail.com" style={{color:'#C9A227'}}>wispersofthepastprints@gmail.com</a> from your registered address.</p>
       <h2>8. Changes</h2>
       <p>Material changes to this policy will be announced by email and on this page before they take effect.</p>
 
       <hr style={{border:'none', borderTop:'1px solid #E0D9C8', margin:'36px 0'}} />
-      <p style={{fontSize:14}}><strong>Contact:</strong> <a href="mailto:studio@wispersofthepast.com" style={{color:'#C9A227'}}>studio@wispersofthepast.com</a> &middot; Glen Innes, NSW, Australia &middot; ABN 28 489 379 023</p>
+      <p style={{fontSize:14}}><strong>Contact:</strong> <a href="mailto:wispersofthepastprints@gmail.com" style={{color:'#C9A227'}}>wispersofthepastprints@gmail.com</a> &middot; Glen Innes, NSW, Australia &middot; ABN 28 489 379 023</p>
     </main>
   );
 }

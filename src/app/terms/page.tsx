@@ -23,7 +23,7 @@ export default function Page() {
       <p>New South Wales, Australia.</p>
 
       <hr style={{border:'none', borderTop:'1px solid #E0D9C8', margin:'36px 0'}} />
-      <p style={{fontSize:14}}><strong>Contact:</strong> <a href="mailto:studio@wispersofthepast.com" style={{color:'#C9A227'}}>studio@wispersofthepast.com</a> &middot; Glen Innes, NSW, Australia &middot; ABN 28 489 379 023</p>
+      <p style={{fontSize:14}}><strong>Contact:</strong> <a href="mailto:wispersofthepastprints@gmail.com" style={{color:'#C9A227'}}>wispersofthepastprints@gmail.com</a> &middot; Glen Innes, NSW, Australia &middot; ABN 28 489 379 023</p>
     </main>
   );
 }
