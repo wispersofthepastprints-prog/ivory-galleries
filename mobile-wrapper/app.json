@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Ivory Galleries",
+    "slug": "ivory-galleries-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ivorygalleries.app"
+    },
+    "android": {
+      "package": "com.ivorygalleries.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "ivorygalleries.app",
+              "pathPrefix": "/g"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "scheme": "ivorygalleries"
+  }
+}
