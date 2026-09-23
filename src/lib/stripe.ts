@@ -6,12 +6,12 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export const TIER_PRICES: Record<string, { monthly: string; yearly: string }> = {
   pro: {
-    monthly: 'price_pro_monthly',      // Replace with actual Stripe Price IDs
-    yearly: 'price_pro_yearly',
+    monthly: 'price_1UIia2DiL7jeD61lwayHi7jh',      // Replace with actual Stripe Price IDs
+    yearly: 'price_1UIiZ6DiL7jeD61lNw8R3teg',
   },
   studio: {
-    monthly: 'price_studio_monthly',
-    yearly: 'price_studio_yearly',
+    monthly: 'price_1UIiilDiL7jeD61lTvAG44KM',
+    yearly: 'price_1UIijgDiL7jeD61lK6Sk4kyJ',
   },
   agency: {
     monthly: 'price_agency_monthly',
