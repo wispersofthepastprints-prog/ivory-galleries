@@ -27,9 +27,6 @@ export function Hero() {
           <Button size="lg" onClick={() => window.location.href = '/register'}>
             Start Free Trial <ArrowRight className="w-5 h-5" />
           </Button>
-          <Button variant="outline" size="lg">
-            See Demo Gallery
-          </Button>
         </div>
 
         <div className="mt-16 flex items-center justify-center gap-8 text-sm text-fog">
