@@ -22,7 +22,7 @@ export default function GalleryDetailPage() {
   const id = params.id as string
   const { photographer } = useAuth()
   const { galleries, updateGallery } = useGallery()
-  const { photos, fetchPhotos, uploadPhoto, isLoading: photosLoading } = usePhotos()
+  const { photos, fetchPhotos, uploadPhoto, deletePhoto, isLoading: photosLoading } = usePhotos()
   const [uploading, setUploading] = useState(false)
 
   const gallery = galleries.find(g => g.id === id)
@@ -140,7 +140,7 @@ export default function GalleryDetailPage() {
           ))}
         </div>
       ) : (
-        <PhotoGrid photos={photos} />
+        <PhotoGrid photos={photos} onDelete={async (id) => { if (window.confirm('Delete this photo? This cannot be undone.')) { try { await deletePhoto(id) } catch { window.alert('Could not delete photo.') } } }} />
       )}
     </div>
   )

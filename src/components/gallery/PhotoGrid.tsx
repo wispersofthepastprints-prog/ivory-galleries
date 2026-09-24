@@ -2,14 +2,15 @@
 
 import { Photo } from '@/src/types'
 import { useState } from 'react'
-import { Heart, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Heart, X, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react'
 
 interface PhotoGridProps {
   photos: Photo[]
   favoritesEnabled?: boolean
+  onDelete?: (id: string) => void
 }
 
-export function PhotoGrid({ photos, favoritesEnabled = false }: PhotoGridProps) {
+export function PhotoGrid({ photos, favoritesEnabled = false, onDelete }: PhotoGridProps) {
   const [lightbox, setLightbox] = useState<number | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
 
@@ -25,6 +26,16 @@ export function PhotoGrid({ photos, favoritesEnabled = false }: PhotoGridProps) 
         {photos.map((photo, i) => (
           <div key={photo.id} className="relative aspect-square bg-stone/10 rounded-lg overflow-hidden group cursor-pointer"
             onClick={() => setLightbox(i)}>
+            {onDelete && (
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); onDelete!(photo.id); }}
+                className="absolute top-2 left-2 w-8 h-8 rounded-full bg-white/80 backdrop-blur flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                title="Delete photo"
+              >
+                <Trash2 className="w-4 h-4 text-red-600" />
+              </button>
+            )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={urlFor(photo)} alt={photo.filename} loading="lazy"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />

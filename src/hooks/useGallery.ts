@@ -50,6 +50,22 @@ export function useGallery() {
   }
 
   const deleteGallery = async (id: string) => {
+    // Purge photo files from storage first (DB cascade removes rows only)
+    const { data: photoRows } = await supabaseBrowser
+      .from('photos')
+      .select('original_url, display_url')
+      .eq('gallery_id', id)
+    const marker = '/object/public/photos/'
+    const paths = (photoRows || [])
+      .map((p: any) => {
+        const url: string | null = p.original_url || p.display_url
+        const idx = url ? url.indexOf(marker) : -1
+        return idx >= 0 ? url!.slice(idx + marker.length) : null
+      })
+      .filter(Boolean) as string[]
+    if (paths.length) {
+      await supabaseBrowser.storage.from('photos').remove(paths)
+    }
     const { error } = await supabaseBrowser
       .from('galleries')
       .delete()

@@ -8,12 +8,17 @@ import { useGallery } from '@/src/hooks/useGallery'
 import { useAuth } from '@/src/hooks/useAuth'
 import { useSubscription } from '@/src/hooks/useSubscription'
 import { formatDate } from '@/src/lib/utils'
-import { Image, Plus, ExternalLink, MoreHorizontal } from 'lucide-react'
+import { Image, Plus, ExternalLink, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function GalleriesPage() {
   const { galleries, isLoading, deleteGallery } = useGallery()
   const { tier } = useAuth()
+
+  const handleDelete = async (gallery: any) => {
+    if (!window.confirm(`Delete "${gallery.title}" and all its photos? This cannot be undone.`)) return
+    try { await deleteGallery(gallery.id) } catch (e) { window.alert('Could not delete gallery. Try again.') }
+  }
   const { getGalleryLimit } = useSubscription()
 
   const limit = getGalleryLimit()
@@ -83,11 +88,13 @@ export default function GalleriesPage() {
                       <ExternalLink className="w-4 h-4 text-fog" />
                     </button>
                   )}
-                  <Link href={`/dashboard/galleries/${gallery.id}`}>
-                    <button className="p-2 rounded-lg hover:bg-cream transition-colors">
-                      <MoreHorizontal className="w-4 h-4 text-fog" />
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => handleDelete(gallery)}
+                    className="p-2 rounded-lg hover:bg-red-50 transition-colors"
+                    title="Delete gallery"
+                  >
+                    <Trash2 className="w-4 h-4 text-fog hover:text-red-600" />
+                  </button>
                 </div>
               </div>
             </Card>
