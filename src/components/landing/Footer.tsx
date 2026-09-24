@@ -21,16 +21,13 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-fog">
               <li><Link href="#features" className="hover:text-ivory transition-colors">Features</Link></li>
               <li><Link href="#pricing" className="hover:text-ivory transition-colors">Pricing</Link></li>
-              <li><Link href="#" className="hover:text-ivory transition-colors">Templates</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-sm uppercase tracking-wider mb-4">Company</h4>
             <ul className="space-y-3 text-sm text-fog">
-              <li><Link href="#" className="hover:text-ivory transition-colors">About</Link></li>
-              <li><Link href="#" className="hover:text-ivory transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-ivory transition-colors">Contact</Link></li>
+              <li><Link href="/contact" className="hover:text-ivory transition-colors">Contact</Link></li>
             </ul>
           </div>
 
