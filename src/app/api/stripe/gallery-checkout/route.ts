@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
     mode: 'payment',
     line_items: [{
       price_data: {
-        currency: 'usd',
+        currency: 'aud',
         unit_amount: gallery.unlock_price_cents,
         product_data: { name: `Full gallery: ${gallery.title}` },
       },
