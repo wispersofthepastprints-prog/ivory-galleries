@@ -6,16 +6,12 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export const TIER_PRICES: Record<string, { monthly: string; yearly: string }> = {
   pro: {
-    monthly: 'price_1UIia2DiL7jeD61lwayHi7jh',      // Replace with actual Stripe Price IDs
-    yearly: 'price_1UIiZ6DiL7jeD61lNw8R3teg',
+    monthly: 'price_1UK622DiL7jeD61lb3T67aBx',
+    yearly: 'price_1UK6gVDiL7jeD61l8hVNDnKb',
   },
   studio: {
-    monthly: 'price_1UIiilDiL7jeD61lTvAG44KM',
-    yearly: 'price_1UIijgDiL7jeD61lK6Sk4kyJ',
-  },
-  agency: {
-    monthly: 'price_agency_monthly',
-    yearly: 'price_agency_yearly',
+    monthly: 'price_1UK6pQDiL7jeD61lWNt410PB',
+    yearly: 'price_1UK6q9DiL7jeD61lq0nMRVzQ',
   },
 }
 
@@ -37,11 +33,5 @@ export const TIER_CONFIG = {
     galleries: Infinity,
     storageBytes: 200 * 1024 * 1024 * 1024, // 200GB
     features: ['Everything in Pro', 'Print store & sales', 'Album builder', 'IvoryOS calendar sync'],
-  },
-  agency: {
-    name: 'Agency',
-    galleries: Infinity,
-    storageBytes: 500 * 1024 * 1024 * 1024, // 500GB
-    features: ['Everything in Studio', 'White-label galleries', 'Multi-photographer', 'Priority support'],
   },
 }
