@@ -12,6 +12,7 @@ import { HardDrive, Palette, Link as LinkIcon, CreditCard } from 'lucide-react'
 export default function SettingsPage() {
   const { photographer, isPro, isStudio, tier } = useAuth()
   const [activeTab, setActiveTab] = useState('general')
+  const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly')
 
   const storageUsed = photographer?.total_storage_bytes || 0
   const storageLimit = photographer?.storage_limit_bytes || 0
@@ -85,9 +86,25 @@ export default function SettingsPage() {
               </div>
               <Badge text={tier.toUpperCase()} variant={isStudio ? 'studio' : isPro ? 'pro' : 'default'} />
             </div>
+            {(!isPro || !isStudio) && (
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-sm text-fog">Billing period</span>
+                <div className="flex rounded-lg border border-stone/30 overflow-hidden">
+                  {(['monthly', 'yearly'] as const).map(b => (
+                    <button
+                      key={b}
+                      onClick={() => setBilling(b)}
+                      className={`px-4 py-2 text-sm font-medium transition-colors ${billing === b ? 'bg-gold text-obsidian' : 'text-fog hover:text-obsidian'}`}
+                    >
+                      {b === 'monthly' ? 'Monthly' : 'Yearly — save 2 months'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="flex gap-3">
-              {!isPro && <Button onClick={() => window.location.href = '/api/stripe/checkout?tier=pro'}>Upgrade to Pro</Button>}
-              {!isStudio && <Button variant="secondary" onClick={() => window.location.href = '/api/stripe/checkout?tier=studio'}>Upgrade to Studio</Button>}
+              {!isPro && <Button onClick={() => window.location.href = `/api/stripe/checkout?tier=pro&billing=${billing}`}>Upgrade to Pro</Button>}
+              {!isStudio && <Button variant="secondary" onClick={() => window.location.href = `/api/stripe/checkout?tier=studio&billing=${billing}`}>Upgrade to Studio</Button>}
               {isPro && <Button variant="ghost" onClick={() => window.location.href = '/api/stripe/portal'}>Manage Billing</Button>}
             </div>
           </Card>
