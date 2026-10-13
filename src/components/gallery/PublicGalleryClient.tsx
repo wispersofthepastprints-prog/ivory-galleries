@@ -6,6 +6,7 @@ import { WatermarkOverlay } from './WatermarkOverlay'
 import { Heart, Download, Share2, Lock, X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 type PublicPhoto = Photo & { public_url: string }
+type DownloadTier = 'off' | 'web' | 'full'
 
 interface Props {
   gallery: Gallery
@@ -15,14 +16,33 @@ interface Props {
   isFreeTier: boolean
 }
 
+// Client-side web-size resize: fetch the original, draw at 1600px, download. Zero server cost.
+async function downloadWebSized(url: string, filename: string) {
+  const res = await fetch(url)
+  const blob = await res.blob()
+  const img = await createImageBitmap(blob)
+  const scale = Math.min(1, 1600 / img.width)
+  const canvas = document.createElement('canvas')
+  canvas.width = Math.round(img.width * scale)
+  canvas.height = Math.round(img.height * scale)
+  canvas.getContext('2d')?.drawImage(img, 0, 0, canvas.width, canvas.height)
+  const out = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.85))
+  if (!out) { window.open(url, '_blank'); return }
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(out)
+  a.download = filename.replace(/\.[^.]+$/, '') + '-web.jpg'
+  a.click()
+  URL.revokeObjectURL(a.href)
+}
+
 export function PublicGalleryClient({ gallery, photos, totalCount, isUnlocked, isFreeTier }: Props) {
   const branding = (gallery.photographer as any)?.branding_colors || { primary: '#0A0A0A', accent: '#D4AF37', background: '#F8F6F0' }
   const [lightbox, setLightbox] = useState<number | null>(null)
   const [favorites, setFavorites] = useState<string[]>([])
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const showWatermark = (gallery.watermark_enabled ?? false) && (!isUnlocked || isFreeTier)
-  const unlockPrice = (gallery.unlock_price_cents ?? 0) / 100
-  const hasUnlockPrice = unlockPrice > 0
+  const downloadTier: DownloadTier = (gallery.metadata?.download_tier as DownloadTier) || (gallery.is_downloadable ? 'full' : 'off')
+  const expired = gallery.expiry_date ? new Date(gallery.expiry_date).getTime() < Date.now() : false
+  const canDownload = downloadTier === 'full' ? (gallery.is_downloadable && isUnlocked) : downloadTier === 'web'
 
   useEffect(() => {
     try {
@@ -48,24 +68,35 @@ export function PublicGalleryClient({ gallery, photos, totalCount, isUnlocked, i
   }
 
   const unlock = async () => {
-    setCheckoutLoading(true)
-    try {
-      const res = await fetch('/api/stripe/gallery-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: gallery.slug }),
-      })
-      const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else alert(data.error || 'Unable to start checkout')
-    } catch {
-      alert('Unable to start checkout — please try again')
-    } finally {
-      setCheckoutLoading(false)
-    }
+    const res = await fetch('/api/stripe/gallery-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug: gallery.slug }),
+    })
+    const data = await res.json()
+    if (data.url) window.location.href = data.url
+    else alert(data.error || 'Unable to start checkout')
   }
 
   const lockedCount = totalCount - photos.length
+
+  // Expired galleries: nothing to see, politely
+  if (expired) {
+    return (
+      <div style={{ backgroundColor: branding.background }} className="min-h-screen flex items-center justify-center px-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-10 text-center">
+          <Lock className="w-10 h-10 mx-auto mb-4" style={{ color: branding.accent }} />
+          <p style={{ color: branding.primary }} className="text-xs font-bold uppercase tracking-[0.2em] mb-2">
+            {(gallery.photographer as any)?.business_name || 'Ivory Galleries'}
+          </p>
+          <h1 style={{ color: branding.primary }} className="text-2xl font-light mb-3">{gallery.title}</h1>
+          <p className="text-gray-500 text-sm leading-relaxed">
+            This gallery has expired. Please contact your photographer to renew access.
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div style={{ backgroundColor: branding.background }} className="min-h-screen">
@@ -93,12 +124,16 @@ export function PublicGalleryClient({ gallery, photos, totalCount, isUnlocked, i
                   <Heart className={`w-4 h-4 ${favorites.includes(photo.id) ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                 </button>
               )}
-              {gallery.is_downloadable && isUnlocked && (
-                <a href={photo.public_url} download={photo.filename} target="_blank" rel="noreferrer"
-                  onClick={(e) => e.stopPropagation()}
+              {canDownload && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if (downloadTier === 'web') downloadWebSized(photo.public_url, photo.filename)
+                    else window.open(photo.public_url, '_blank')
+                  }}
                   className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <Download className="w-4 h-4 text-gray-600" />
-                </a>
+                </button>
               )}
             </div>
           ))}
@@ -117,15 +152,15 @@ export function PublicGalleryClient({ gallery, photos, totalCount, isUnlocked, i
             <Lock className="w-8 h-8 mx-auto mb-3" style={{ color: branding.accent }} />
             <h3 style={{ color: branding.primary }} className="text-xl font-bold mb-1">+{lockedCount} more photos</h3>
             <p className="text-gray-500 text-sm mb-5">
-              {hasUnlockPrice
-                ? `Unlock the full gallery for $${unlockPrice.toFixed(2)} — instant access, high-res downloads included.`
+              {(gallery.unlock_price_cents ?? 0) > 0
+                ? `Unlock the full gallery for $${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)} — instant access, high-res downloads included.`
                 : 'Contact your photographer to unlock the full gallery.'}
             </p>
-            {hasUnlockPrice && (
-              <button onClick={unlock} disabled={checkoutLoading}
-                className="px-8 py-3 rounded-full font-bold text-sm shadow-lg hover:opacity-90 transition-opacity disabled:opacity-60 disabled:cursor-not-allowed"
+            {(gallery.unlock_price_cents ?? 0) > 0 && (
+              <button onClick={unlock}
+                className="px-8 py-3 rounded-full font-bold text-sm shadow-lg hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: branding.accent, color: '#0A0A0A' }}>
-                {checkoutLoading ? 'Redirecting to checkout…' : `Unlock Full Gallery — $${unlockPrice.toFixed(2)}`}
+                Unlock Full Gallery — ${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)}
               </button>
             )}
           </div>
