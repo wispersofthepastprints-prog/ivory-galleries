@@ -17,6 +17,12 @@ import { formatDate } from '@/src/lib/utils'
 import { Globe, Loader2, Lock } from 'lucide-react'
 import Link from 'next/link'
 
+type DownloadTier = 'off' | 'web' | 'full'
+
+function futureDateISO(days: number): string {
+  return new Date(Date.now() + days * 86400000).toISOString()
+}
+
 export default function GalleryDetailPage() {
   const params = useParams()
   const id = params.id as string
@@ -24,12 +30,18 @@ export default function GalleryDetailPage() {
   const { galleries, updateGallery } = useGallery()
   const { photos, fetchPhotos, uploadPhoto, deletePhoto, isLoading: photosLoading } = usePhotos()
   const [uploading, setUploading] = useState(false)
+  const [expiryDraft, setExpiryDraft] = useState('')
 
   const gallery = galleries.find(g => g.id === id)
+  const downloadTier: DownloadTier = (gallery?.metadata?.download_tier as DownloadTier) || (gallery?.is_downloadable ? 'full' : 'off')
 
   useEffect(() => {
     if (id) fetchPhotos(id)
   }, [id, fetchPhotos])
+
+  useEffect(() => {
+    if (gallery?.expiry_date) setExpiryDraft(gallery.expiry_date.slice(0, 10))
+  }, [gallery?.expiry_date])
 
   const handleUpload = async (files: File[]) => {
     if (!photographer || !gallery) return
@@ -49,6 +61,20 @@ export default function GalleryDetailPage() {
     if (!gallery) return
     const newStatus = gallery.status === 'published' ? 'draft' : 'published'
     await updateGallery(gallery.id, { status: newStatus })
+  }
+
+  const setExpiry = async (iso: string | null) => {
+    if (!gallery) return
+    await updateGallery(gallery.id, { expiry_date: iso })
+    setExpiryDraft(iso ? iso.slice(0, 10) : '')
+  }
+
+  const setDownloads = async (tier: DownloadTier) => {
+    if (!gallery) return
+    await updateGallery(gallery.id, {
+      is_downloadable: tier !== 'off',
+      metadata: { ...gallery.metadata, download_tier: tier },
+    })
   }
 
   if (!gallery) {
@@ -110,9 +136,53 @@ export default function GalleryDetailPage() {
                   <button className="text-sm text-gold font-medium">Configure</button>
                 </FeatureGate>
               </div>
-              <div className="flex items-center justify-between py-2">
-                <span className="text-sm text-fog">Downloads</span>
-                <button className="text-sm text-gold font-medium">Allowed</button>
+
+              <div className="py-2 border-b border-stone/10">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-fog">Gallery Expiry</span>
+                  <span className="text-xs text-fog">{gallery.expiry_date ? formatDate(gallery.expiry_date) : 'Never'}</span>
+                </div>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {[30, 90, 180].map((d) => (
+                    <button
+                      key={d}
+                      onClick={() => setExpiry(futureDateISO(d))}
+                      className="text-xs px-3 py-1.5 rounded-full border border-stone/30 text-fog hover:border-gold hover:text-gold transition-colors"
+                    >
+                      {d} days
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setExpiry(null)}
+                    className="text-xs px-3 py-1.5 rounded-full border border-stone/30 text-fog hover:border-gold hover:text-gold transition-colors"
+                  >
+                    Never
+                  </button>
+                </div>
+                <input
+                  type="date"
+                  value={expiryDraft}
+                  onChange={(e) => setExpiry(e.target.value ? new Date(e.target.value + 'T12:00:00').toISOString() : null)}
+                  className="mt-2 w-full text-sm px-3 py-2 rounded-lg border border-stone/30 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+                />
+              </div>
+
+              <div className="py-2">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-fog">Downloads</span>
+                  <select
+                    value={downloadTier}
+                    onChange={(e) => setDownloads(e.target.value as DownloadTier)}
+                    className="text-sm px-3 py-1.5 rounded-lg border border-stone/30 bg-white focus:outline-none focus:ring-2 focus:ring-gold/50"
+                  >
+                    <option value="off">Off</option>
+                    <option value="web">Web size</option>
+                    <option value="full">Full resolution</option>
+                  </select>
+                </div>
+                <p className="text-xs text-stone leading-relaxed">
+                  Full resolution requires the gallery to be unlocked. Expired galleries are no longer viewable.
+                </p>
               </div>
             </div>
           </Card>
