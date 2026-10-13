@@ -25,7 +25,7 @@ export function Hero() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" onClick={() => window.location.href = '/register'}>
-            Start Free Trial <ArrowRight className="w-5 h-5" />
+            Get Started Free <ArrowRight className="w-5 h-5" />
           </Button>
         </div>
 
