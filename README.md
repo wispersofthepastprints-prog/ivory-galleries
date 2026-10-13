@@ -63,3 +63,4 @@ The `mobile-wrapper/` folder is a thin Expo WebView app. Build it with EAS when 
 5. Replace placeholder Price IDs in `src/lib/stripe.ts` with real ones (the API now refuses placeholders with a clear 503)
 6. Set `NEXT_PUBLIC_APP_URL` to your deployed URL
 7. End-to-end test: create gallery → upload 25 photos → set access_mode=preview, preview_limit=20, unlock_price_cents → publish → open `/g/<slug>` in an incognito window → confirm 20 shown + 5 blurred teasers + unlock CTA → Stripe test card `4242 4242 4242 4242` → redirected back with full gallery + purchase row in `gallery_purchases`
+
