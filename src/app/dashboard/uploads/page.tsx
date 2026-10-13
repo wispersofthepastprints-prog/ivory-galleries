@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Card } from '@/src/components/ui/Card'
-import { Button } from '@/src/components/ui/Button'
 import { usePhotos } from '@/src/hooks/usePhotos'
 import { useGallery } from '@/src/hooks/useGallery'
 import { useAuth } from '@/src/hooks/useAuth'
-import { supabaseBrowser } from '@/src/lib/supabase'
 import { Upload, CheckCircle2 } from 'lucide-react'
 
 export default function UploadsPage() {
@@ -28,12 +26,12 @@ export default function UploadsPage() {
     setError('')
     if (!galleryId) { setError('Select a gallery first.'); return }
 
-        for (const file of Array.from(e.target.files)) {
+    for (const file of Array.from(e.target.files)) {
       try {
         await uploadPhoto(file, galleryId, photographer.id)
         setDone(d => d + 1)
       } catch (err: any) {
-        setError(err?.message ?? 'Upload failed — please try again')
+        setError(err?.message || 'Upload failed')
         break
       }
     }
