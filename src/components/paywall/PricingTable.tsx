@@ -3,12 +3,13 @@
 import { Button } from '@/src/components/ui/Button'
 import { Card } from '@/src/components/ui/Card'
 import { Badge } from '@/src/components/ui/Badge'
+import { useCurrency } from '@/src/hooks/useCurrency'
 import { Check } from 'lucide-react'
 
 const plans = [
   {
     name: 'Free',
-    price: '$0',
+    price: { aud: '$0', usd: '$0' },
     period: '/mo',
     yearly: null,
     description: 'Perfect for trying Ivory Galleries',
@@ -19,9 +20,9 @@ const plans = [
   },
   {
     name: 'Pro',
-    price: '$15',
+    price: { aud: 'A$15', usd: 'US$15' },
     period: '/mo',
-    yearly: 'or $150/yr - save 2 months',
+    yearly: { aud: 'or A$150/yr - save 2 months', usd: 'or US$150/yr - save 2 months' },
     description: 'For working photographers',
     features: [
       'Sell gallery unlocks - keep the margin',
@@ -38,9 +39,9 @@ const plans = [
   },
   {
     name: 'Studio',
-    price: '$39',
+    price: { aud: 'A$39', usd: 'US$39' },
     period: '/mo',
-    yearly: 'or $390/yr - save 2 months',
+    yearly: { aud: 'or A$390/yr - save 2 months', usd: 'or US$390/yr - save 2 months' },
     description: 'For studios selling prints',
     features: [
       'Everything in Pro',
@@ -57,6 +58,8 @@ const plans = [
 ]
 
 export function PricingTable() {
+  const currency = useCurrency()
+
   return (
     <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
       {plans.map(plan => (
@@ -74,12 +77,12 @@ export function PricingTable() {
           <div className="text-center mb-6">
             <h3 className="text-lg font-bold text-obsidian">{plan.name}</h3>
             <div className="flex items-baseline justify-center gap-1 mt-2">
-              <span className="text-4xl font-extrabold text-obsidian">{plan.price}</span>
+              <span className="text-4xl font-extrabold text-obsidian">{plan.price[currency]}</span>
               <span className="text-fog">{plan.period}</span>
             </div>
             <p className="text-sm text-fog mt-2">{plan.description}</p>
             {plan.yearly && (
-              <p className="text-xs font-semibold text-gold mt-1">{plan.yearly}</p>
+              <p className="text-xs font-semibold text-gold mt-1">{plan.yearly[currency]}</p>
             )}
           </div>
 
@@ -95,7 +98,7 @@ export function PricingTable() {
           <Button
             variant={plan.popular ? 'primary' : 'outline'}
             className="w-full"
-            onClick={() => (window.location.href = plan.href)}
+            onClick={() => (window.location.href = `${plan.href}${plan.name === 'Free' ? '' : `&currency=${currency}`}`)}
           >
             {plan.cta}
           </Button>
