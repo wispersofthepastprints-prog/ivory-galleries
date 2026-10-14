@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe, TIER_PRICES } from '@/src/lib/stripe'
+import { stripe, priceTableFor, detectCurrency } from '@/src/lib/stripe'
 import { createSupabaseRouteHandler } from '@/src/lib/supabase-server'
 
 export async function GET(req: NextRequest) {
@@ -8,11 +8,13 @@ export async function GET(req: NextRequest) {
     const tier = searchParams.get('tier') as 'pro' | 'studio'
     const billing = searchParams.get('billing') || 'monthly'
 
-    if (!tier || !TIER_PRICES[tier]) {
+    if (!tier || !priceTableFor('aud')[tier]) {
       return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
     }
 
-    const priceId = billing === 'yearly' ? TIER_PRICES[tier].yearly : TIER_PRICES[tier].monthly
+    const currency = detectCurrency(req.headers, searchParams.get('currency'))
+    const table = priceTableFor(currency)
+    const priceId = billing === 'yearly' ? table[tier].yearly : table[tier].monthly
     if (!/^price_[A-Za-z0-9]{20,}$/.test(priceId)) {
       return NextResponse.json(
         { error: 'Billing not configured: add real Stripe Price IDs in src/lib/stripe.ts' },
@@ -36,7 +38,7 @@ export async function GET(req: NextRequest) {
       success_url: `${appUrl}/dashboard/settings?tab=billing&success=true`,
       cancel_url: `${appUrl}/dashboard/settings?tab=billing&canceled=true`,
       customer_email: session.user.email ?? undefined,
-      subscription_data: { metadata: { tier, user_id: session.user.id } },
+      subscription_data: { metadata: { tier, user_id: session.user.id, currency } },
     })
 
     return NextResponse.redirect(sessionStripe.url!, 303)
