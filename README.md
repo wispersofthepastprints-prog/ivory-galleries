@@ -28,11 +28,11 @@ Copy `.env.example` to `.env` and fill in your keys:
 4. Set up auth with email/password enabled
 
 ## Stripe Setup
-1. Create products in Stripe Dashboard:
-   - Pro Monthly: $19.99
-   - Studio Monthly: $49.99
-   - Agency Monthly: $99.99
-2. Add Price IDs to `src/lib/stripe.ts`
+1. Products in Stripe Dashboard (one product per tier, two currencies each):
+   - Ivory Galleries Pro: A$15/mo or A$150/yr (AUD) + US$15/mo or US$150/yr (USD)
+   - Ivory Galleries Studio: A$39/mo or A$390/yr (AUD) + US$39/mo or US$390/yr (USD)
+   - AUD IDs live in `TIER_PRICES`, USD IDs in `TIER_PRICES_USD` (both in `src/lib/stripe.ts`)
+   - Currency is chosen automatically: Australia → AUD, rest of world → USD
 3. Set webhook endpoint to `https://yourdomain.com/api/stripe/webhook`
 4. Add webhook signing secret to `.env`
 
@@ -46,9 +46,10 @@ npm run build
 | Tier | Price | Key Features |
 |------|-------|-------------|
 | Free | $0 | 3 galleries, 5GB, watermark branding |
-| Pro | $19.99/mo | Unlimited, 50GB, custom branding |
-| Studio | $49.99/mo | +Print store, album builder, IvoryOS sync |
-| Agency | $99.99/mo | +White-label, 500GB, multi-photographer |
+| Pro | A$15/mo (AU) or US$15/mo | Unlimited, 50GB, custom branding |
+| Studio | A$39/mo (AU) or US$39/mo | +Print store, album builder, IvoryOS sync |
+
+Australia is charged in AUD, the rest of the world in USD. Gallery unlock sales are always AUD.
 
 ## Mobile Wrapper
 The `mobile-wrapper/` folder is a thin Expo WebView app. Build it with EAS when you're ready for App Store presence.
