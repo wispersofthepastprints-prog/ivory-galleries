@@ -71,14 +71,14 @@ export function ClientAccessCard({ gallery, onSave }: Props) {
                 className="w-28 px-3 py-2 rounded-lg border border-stone/30 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-fog mb-1">Unlock price (USD)</label>
+              <label className="block text-xs font-medium text-fog mb-1">Unlock price (AUD)</label>
               <div className="flex items-center gap-1">
                 <DollarSign className="w-4 h-4 text-stone" />
                 <input type="number" min={0} step="0.50" value={priceDollars}
                   onChange={e => setPriceDollars(e.target.value)}
                   className="w-28 px-3 py-2 rounded-lg border border-stone/30 text-sm focus:outline-none focus:ring-2 focus:ring-gold/50" />
               </div>
-              <p className="text-xs text-fog mt-1">Typical range: $29–$99 per gallery. Stripe deposits to your account; fees apply.</p>
+              <p className="text-xs text-fog mt-1">Typical range: A$29–A$99 per gallery. Stripe deposits to your account; fees apply.</p>
             </div>
           </div>
         )}
