@@ -6,6 +6,7 @@ import { Card } from '@/src/components/ui/Card'
 import { Button } from '@/src/components/ui/Button'
 import { Badge } from '@/src/components/ui/Badge'
 import { useAuth } from '@/src/hooks/useAuth'
+import { useCurrency } from '@/src/hooks/useCurrency'
 import { formatBytes } from '@/src/lib/utils'
 import { HardDrive, Palette, Link as LinkIcon, CreditCard } from 'lucide-react'
 
@@ -13,6 +14,7 @@ export default function SettingsPage() {
   const { photographer, isPro, isStudio, tier } = useAuth()
   const [activeTab, setActiveTab] = useState('general')
   const [billing, setBilling] = useState<'monthly' | 'yearly'>('monthly')
+  const currency = useCurrency()
 
   const storageUsed = photographer?.total_storage_bytes || 0
   const storageLimit = photographer?.storage_limit_bytes || 0
@@ -103,8 +105,8 @@ export default function SettingsPage() {
               </div>
             )}
             <div className="flex gap-3">
-              {!isPro && <Button onClick={() => window.location.href = `/api/stripe/checkout?tier=pro&billing=${billing}`}>Upgrade to Pro</Button>}
-              {!isStudio && <Button variant="secondary" onClick={() => window.location.href = `/api/stripe/checkout?tier=studio&billing=${billing}`}>Upgrade to Studio</Button>}
+              {!isPro && <Button onClick={() => window.location.href = `/api/stripe/checkout?tier=pro&billing=${billing}&currency=${currency}`}>Upgrade to Pro</Button>}
+              {!isStudio && <Button variant="secondary" onClick={() => window.location.href = `/api/stripe/checkout?tier=studio&billing=${billing}&currency=${currency}`}>Upgrade to Studio</Button>}
               {isPro && <Button variant="ghost" onClick={() => window.location.href = '/api/stripe/portal'}>Manage Billing</Button>}
             </div>
           </Card>
