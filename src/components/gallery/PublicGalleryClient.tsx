@@ -153,14 +153,14 @@ export function PublicGalleryClient({ gallery, photos, totalCount, isUnlocked, i
             <h3 style={{ color: branding.primary }} className="text-xl font-bold mb-1">+{lockedCount} more photos</h3>
             <p className="text-gray-500 text-sm mb-5">
               {(gallery.unlock_price_cents ?? 0) > 0
-                ? `Unlock the full gallery for $${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)} — instant access, high-res downloads included.`
+                ? `Unlock the full gallery for A$${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)} — instant access, high-res downloads included.`
                 : 'Contact your photographer to unlock the full gallery.'}
             </p>
             {(gallery.unlock_price_cents ?? 0) > 0 && (
               <button onClick={unlock}
                 className="px-8 py-3 rounded-full font-bold text-sm shadow-lg hover:opacity-90 transition-opacity"
                 style={{ backgroundColor: branding.accent, color: '#0A0A0A' }}>
-                Unlock Full Gallery — ${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)}
+                Unlock Full Gallery — A$${((gallery.unlock_price_cents ?? 0) / 100).toFixed(2)}
               </button>
             )}
           </div>
