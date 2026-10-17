@@ -14,7 +14,7 @@ create table photographers (
   stripe_customer_id text,
   stripe_subscription_id text,
   total_storage_bytes bigint default 0,
-  storage_limit_bytes bigint default 1073741824,
+  storage_limit_bytes bigint default 5368709120,
   print_markup_percent integer default 25,
   album_markup_percent integer default 40,
   ivoryos_sync_enabled boolean default false,
