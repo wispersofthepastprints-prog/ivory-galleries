@@ -8,6 +8,7 @@ import { Badge } from '@/src/components/ui/Badge'
 import { useAuth } from '@/src/hooks/useAuth'
 import { useCurrency } from '@/src/hooks/useCurrency'
 import { formatBytes } from '@/src/lib/utils'
+import { TIER_CONFIG } from '@/src/lib/stripe'
 import { HardDrive, Palette, Link as LinkIcon, CreditCard } from 'lucide-react'
 
 export default function SettingsPage() {
@@ -17,7 +18,10 @@ export default function SettingsPage() {
   const currency = useCurrency()
 
   const storageUsed = photographer?.total_storage_bytes || 0
-  const storageLimit = photographer?.storage_limit_bytes || 0
+  // Always derive the limit from the tier config — the photographers table's
+  // storage_limit_bytes column is a legacy default (1GB) that was never kept
+  // in sync, and marketing copy quotes the tier config numbers.
+  const storageLimit = TIER_CONFIG[tier as keyof typeof TIER_CONFIG]?.storageBytes || 5 * 1024 * 1024 * 1024
   const storagePercent = Math.min(100, (storageUsed / storageLimit) * 100)
 
   const tabs = [
@@ -109,6 +113,22 @@ export default function SettingsPage() {
               {!isStudio && <Button variant="secondary" onClick={() => window.location.href = `/api/stripe/checkout?tier=studio&billing=${billing}&currency=${currency}`}>Upgrade to Studio</Button>}
               {isPro && <Button variant="ghost" onClick={() => window.location.href = '/api/stripe/portal'}>Manage Billing</Button>}
             </div>
+            {(!isPro || !isStudio) && (
+              <div className="mt-5 pt-4 border-t border-stone/10 grid sm:grid-cols-2 gap-4 text-sm">
+                {!isPro && (
+                  <div>
+                    <p className="font-semibold text-obsidian">Pro</p>
+                    <p className="text-fog">50GB storage · Unlimited galleries · Custom branding</p>
+                  </div>
+                )}
+                {!isStudio && (
+                  <div>
+                    <p className="font-semibold text-obsidian">Studio</p>
+                    <p className="text-fog">200GB storage · Print store · IvoryOS calendar sync</p>
+                  </div>
+                )}
+              </div>
+            )}
           </Card>
           <Card className="p-6">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-fog mb-4">Plan Comparison</h4>
