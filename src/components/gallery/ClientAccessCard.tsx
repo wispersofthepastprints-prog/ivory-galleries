@@ -91,7 +91,7 @@ export function ClientAccessCard({ gallery, onSave }: Props) {
 
       {earnings.count > 0 && (
         <p className="text-xs text-green-600 mt-3 text-center">
-          {earnings.count} unlock{earnings.count === 1 ? '' : 's'} · ${(earnings.cents / 100).toFixed(2)} earned from this gallery
+          {earnings.count} unlock{earnings.count === 1 ? '' : 's'} · A${(earnings.cents / 100).toFixed(2)} earned from this gallery
         </p>
       )}
     </Card>

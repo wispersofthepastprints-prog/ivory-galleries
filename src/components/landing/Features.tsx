@@ -1,20 +1,20 @@
-import { Zap, Shield, Palette, ShoppingBag, Heart, Lock } from 'lucide-react'
+import { Zap, Shield, Palette, ShoppingBag, DollarSign, Lock } from 'lucide-react'
 
 const features = [
   {
     icon: Zap,
-    title: 'Lightning Fast Upload',
-    desc: 'Drag, drop, done. Our chunked uploader handles RAWs, JPEGs, and HEICs up to 50MB each.',
+    title: 'Simple Image Uploads',
+    desc: 'Drag and drop image files up to 25MB each, with your originals stored for client delivery.',
   },
   {
     icon: Palette,
-    title: 'Your Brand, Everywhere',
-    desc: 'Custom colors, logos, and domains. Your clients see your studio, not ours.',
+    title: 'Your Studio Presentation',
+    desc: 'Client galleries carry your studio name in a clean, professional layout designed for review.',
   },
   {
-    icon: Heart,
-    title: 'Client Favorites',
-    desc: 'Let clients heart their must-have shots. Export a favorites list in one click.',
+    icon: DollarSign,
+    title: 'Paid Gallery Unlocks',
+    desc: 'Offer a limited free preview and charge clients in AUD to unlock the complete gallery.',
   },
   {
     icon: ShoppingBag,
@@ -23,8 +23,8 @@ const features = [
   },
   {
     icon: Shield,
-    title: 'Password Protected',
-    desc: 'Lock galleries behind passwords or email-gated access. Your work stays yours.',
+    title: 'Preview Access Controls',
+    desc: 'Choose a fully open gallery or limit the free preview until the client unlocks the rest.',
   },
   {
     icon: Lock,

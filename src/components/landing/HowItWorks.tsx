@@ -5,19 +5,19 @@ const steps = [
     num: '01',
     icon: Upload,
     title: 'Upload Your Photos',
-    desc: 'Drag and drop entire wedding sets. We handle RAW conversion, thumbnails, and web-optimized previews.',
+    desc: 'Drag and drop image files up to 25MB each. Your original files are stored for client delivery.',
   },
   {
     num: '02',
     icon: Share2,
     title: 'Share the Gallery',
-    desc: 'Send a branded link or QR code. Clients view on any device — phone, tablet, or desktop.',
+    desc: 'Send your gallery link. Clients can review their photos on a phone, tablet, or desktop.',
   },
   {
     num: '03',
     icon: CreditCard,
     title: 'Get Paid',
-    desc: 'Clients order prints and albums directly from your gallery — print ordering rolls out to Studio soon.',
+    desc: 'Offer a free preview and let clients pay in AUD to unlock the full gallery. Print ordering rolls out to Studio soon.',
   },
 ]
 

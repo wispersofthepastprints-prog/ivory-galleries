@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe, priceTableFor, detectCurrency } from '@/src/lib/stripe'
 import { createSupabaseRouteHandler } from '@/src/lib/supabase-server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
@@ -38,6 +40,7 @@ export async function GET(req: NextRequest) {
       success_url: `${appUrl}/dashboard/settings?tab=billing&success=true`,
       cancel_url: `${appUrl}/dashboard/settings?tab=billing&canceled=true`,
       customer_email: session.user.email ?? undefined,
+      metadata: { tier, user_id: session.user.id, currency },
       subscription_data: { metadata: { tier, user_id: session.user.id, currency } },
     })
 
