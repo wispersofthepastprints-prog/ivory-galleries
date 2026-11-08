@@ -1,6 +1,8 @@
 node_modules/
 .next/
+.next-*/
+*.tsbuildinfo
 .env*
-.vercel/
+!.env.example
 .vercel/
 .vercel

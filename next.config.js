@@ -1,12 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || '.next',
   images: {
-    domains: ['localhost', '*.supabase.co', '*.supabase.in'],
-  },
-  experimental: {
-    serverActions: {
-      bodySizeLimit: '50mb',
-    },
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: '*.supabase.in' },
+    ],
   },
 }
 
