@@ -293,7 +293,7 @@ export type Database = {
         base_price_cents: number
         category: string
         created_at?: string | null
-        description?: string | null
+        description: string | null
         id?: string
         is_active?: boolean | null
         name: string
