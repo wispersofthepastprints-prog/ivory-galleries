@@ -1,4 +1,4 @@
-import { Zap, Shield, Palette, ShoppingBag, DollarSign, Lock } from 'lucide-react'
+import { Zap, Shield, Palette, CalendarClock, DollarSign, Lock } from 'lucide-react'
 
 const features = [
   {
@@ -14,12 +14,12 @@ const features = [
   {
     icon: DollarSign,
     title: 'Paid Gallery Unlocks',
-    desc: 'Offer a limited free preview and charge clients in AUD to unlock the complete gallery.',
+    desc: 'On Studio, offer a limited free preview and charge clients in AUD to unlock the complete gallery.',
   },
   {
-    icon: ShoppingBag,
-    title: 'Print Store (Coming Soon)',
-    desc: 'Sell prints, canvases, and albums directly from your galleries — launching in Studio. Join the waitlist to shape it.',
+    icon: CalendarClock,
+    title: 'Controlled Availability',
+    desc: 'Set a gallery expiry date or keep the link available until you choose to unpublish it.',
   },
   {
     icon: Shield,

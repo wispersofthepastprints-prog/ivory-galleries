@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Button } from '@/src/components/ui/Button'
 import { Card } from '@/src/components/ui/Card'
 import { Badge } from '@/src/components/ui/Badge'
@@ -25,7 +26,6 @@ const plans = [
     yearly: { aud: 'or A$150/yr - save 2 months', usd: 'or US$150/yr - save 2 months' },
     description: 'For working photographers',
     features: [
-      'Sell gallery unlocks - keep the margin',
       'Unlimited galleries',
       '50GB storage',
       'Studio name on client galleries',
@@ -42,14 +42,12 @@ const plans = [
     price: { aud: 'A$39', usd: 'US$39' },
     period: '/mo',
     yearly: { aud: 'or A$390/yr - save 2 months', usd: 'or US$390/yr - save 2 months' },
-    description: 'For studios selling prints',
+    description: 'For photographers offering paid gallery access',
     features: [
       'Everything in Pro',
       '200GB storage',
-      'Print store & sales (coming soon)',
-      'Album builder (planned)',
-      'IvoryOS integration (in development)',
-      'Lab fulfillment (coming soon)',
+      'Paid gallery unlocks through Stripe',
+      'Gross unlock sales dashboard',
     ],
     cta: 'Start Studio',
     href: '/register?tier=studio',
@@ -95,13 +93,11 @@ export function PricingTable() {
             ))}
           </ul>
 
-          <Button
-            variant={plan.popular ? 'primary' : 'outline'}
-            className="w-full"
-            onClick={() => (window.location.href = `${plan.href}${plan.name === 'Free' ? '' : `&currency=${currency}`}`)}
-          >
-            {plan.cta}
-          </Button>
+          <Link href={`${plan.href}${plan.name === 'Free' ? '' : `&currency=${currency}`}`} className="mt-auto">
+            <Button variant={plan.popular ? 'primary' : 'outline'} className="w-full">
+              {plan.cta}
+            </Button>
+          </Link>
         </Card>
       ))}
     </div>

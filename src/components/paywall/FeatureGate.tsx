@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useSubscription } from '@/src/hooks/useSubscription'
 import { Lock, ArrowUpRight } from 'lucide-react'
 import { Button } from '@/src/components/ui/Button'
@@ -26,11 +27,9 @@ export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
       <p className="text-fog max-w-sm mb-6">
         This feature is available on a higher plan. Upgrade to access it and grow your studio.
       </p>
-      <Button
-        onClick={() => (window.location.href = `/dashboard/settings?tab=billing&upgrade=${feature}`)}
-      >
-        Upgrade Plan <ArrowUpRight className="w-4 h-4" />
-      </Button>
+      <Link href={`/dashboard/settings?tab=billing&upgrade=${encodeURIComponent(feature)}`}>
+        <Button>Upgrade Plan <ArrowUpRight className="w-4 h-4" /></Button>
+      </Link>
     </div>
   )
 }

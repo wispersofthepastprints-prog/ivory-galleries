@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Button } from '@/src/components/ui/Button'
 import { ArrowRight } from 'lucide-react'
 
@@ -11,15 +12,13 @@ export function CTA() {
           Ready to deliver like a pro?
         </h2>
         <p className="text-obsidian/70 text-lg mb-8 max-w-xl mx-auto">
-          Join the founding photographers shaping Ivory Galleries — built by a working wedding photographer in Australia. Founding members lock in pricing for life.
+          Start with three galleries and 5 GB of storage. Upgrade when you need unlimited galleries, password protection, or paid client unlocks.
         </p>
-        <Button
-          variant="secondary"
-          size="lg"
-          onClick={() => window.location.href = '/register'}
-        >
-          Get Started Free <ArrowRight className="w-5 h-5" />
-        </Button>
+        <Link href="/register" className="inline-flex">
+          <Button variant="secondary" size="lg">
+            Get Started Free <ArrowRight className="w-5 h-5" />
+          </Button>
+        </Link>
       </div>
     </section>
   )

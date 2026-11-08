@@ -17,7 +17,7 @@ const steps = [
     num: '03',
     icon: CreditCard,
     title: 'Get Paid',
-    desc: 'Offer a free preview and let clients pay in AUD to unlock the full gallery. Print ordering rolls out to Studio soon.',
+    desc: 'On Studio, offer a free preview and let clients pay in AUD to unlock the full gallery through secure Stripe Checkout.',
   },
 ]
 
