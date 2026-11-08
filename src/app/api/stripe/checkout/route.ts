@@ -7,44 +7,44 @@ export const dynamic = 'force-dynamic'
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
-    const tier = searchParams.get('tier') as 'pro' | 'studio'
+    const tier = searchParams.get('tier')
     const billing = searchParams.get('billing') || 'monthly'
-
-    if (!tier || !priceTableFor('aud')[tier]) {
-      return NextResponse.json({ error: 'Invalid tier' }, { status: 400 })
+    if ((tier !== 'pro' && tier !== 'studio') || (billing !== 'monthly' && billing !== 'yearly')) {
+      return NextResponse.json({ error: 'Invalid plan' }, { status: 400 })
     }
 
     const currency = detectCurrency(req.headers, searchParams.get('currency'))
     const table = priceTableFor(currency)
     const priceId = billing === 'yearly' ? table[tier].yearly : table[tier].monthly
     if (!/^price_[A-Za-z0-9]{20,}$/.test(priceId)) {
-      return NextResponse.json(
-        { error: 'Billing not configured: add real Stripe Price IDs in src/lib/stripe.ts' },
-        { status: 503 },
-      )
+      return NextResponse.json({ error: 'Billing is not configured.' }, { status: 503 })
     }
 
-    const supabase = createSupabaseRouteHandler()
-    const { data: { session } } = await supabase.auth.getSession()
+    const supabase = await createSupabaseRouteHandler()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.redirect(new URL('/login', req.url))
 
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', req.url))
-    }
-
+    const { data: photographer } = await supabase
+      .from('photographers')
+      .select('stripe_customer_id')
+      .eq('id', user.id)
+      .maybeSingle()
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin
 
-    const sessionStripe = await stripe.checkout.sessions.create({
+    const checkout = await stripe.checkout.sessions.create({
       mode: 'subscription',
-      payment_method_types: ['card'],
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: `${appUrl}/dashboard/settings?tab=billing&success=true`,
       cancel_url: `${appUrl}/dashboard/settings?tab=billing&canceled=true`,
-      customer_email: session.user.email ?? undefined,
-      metadata: { tier, user_id: session.user.id, currency },
-      subscription_data: { metadata: { tier, user_id: session.user.id, currency } },
+      customer: photographer?.stripe_customer_id || undefined,
+      customer_email: photographer?.stripe_customer_id ? undefined : user.email,
+      client_reference_id: user.id,
+      metadata: { tier, user_id: user.id, currency },
+      subscription_data: { metadata: { tier, user_id: user.id, currency } },
     })
 
-    return NextResponse.redirect(sessionStripe.url!, 303)
+    if (!checkout.url) throw new Error('Stripe did not return a Checkout URL')
+    return NextResponse.redirect(checkout.url, 303)
   } catch (error) {
     console.error('Stripe checkout error:', error)
     return NextResponse.redirect(new URL('/dashboard/settings?tab=billing&error=checkout_failed', req.url))

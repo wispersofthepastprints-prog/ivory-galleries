@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Lock, Loader2 } from 'lucide-react'
 
 export function PasswordGate({ galleryId, slug }: { galleryId: string; slug: string }) {
+  const router = useRouter()
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,7 +20,8 @@ export function PasswordGate({ galleryId, slug }: { galleryId: string; slug: str
       body: JSON.stringify({ galleryId, slug, password }),
     })
     if (res.ok) {
-      window.location.href = `/g/${slug}`
+      router.replace(`/g/${slug}`)
+      router.refresh()
     } else {
       setError('Incorrect password. Please try again.')
       setLoading(false)

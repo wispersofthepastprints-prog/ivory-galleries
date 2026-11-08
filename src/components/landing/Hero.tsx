@@ -20,13 +20,15 @@ export function Hero() {
 
         <p className="text-xl text-fog max-w-2xl mx-auto mb-10 leading-relaxed">
           The beautiful, fast client gallery platform built for wedding and portrait photographers.
-          Upload once. Deliver everywhere. Sell gallery unlocks while you sleep.
+          Upload once. Deliver through a clean client link. Offer paid gallery unlocks on Studio.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" onClick={() => window.location.href = '/register'}>
-            Get Started Free <ArrowRight className="w-5 h-5" />
-          </Button>
+          <Link href="/register">
+            <Button size="lg">
+              Get Started Free <ArrowRight className="w-5 h-5" />
+            </Button>
+          </Link>
         </div>
 
         <div className="mt-16 flex items-center justify-center gap-8 text-sm text-fog">

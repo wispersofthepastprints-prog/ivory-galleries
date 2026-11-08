@@ -48,7 +48,7 @@ export interface Gallery {
   custom_domain: string | null;
   seo_title: string | null;
   seo_description: string | null;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   // Monetization fields (migration 002)
   access_mode?: 'preview' | 'full';
   preview_limit?: number;
@@ -79,6 +79,7 @@ export interface Photo {
   sort_order: number;
   is_highlight: boolean;
   created_at: string;
+  signed_url?: string;
 }
 
 export interface PrintProduct {

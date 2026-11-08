@@ -2,17 +2,18 @@
 
 import { useCallback } from 'react'
 import { ImagePlus } from 'lucide-react'
+import { PHOTO_ACCEPT, PHOTO_MIME_TYPES } from '@/src/lib/photo-upload'
 
 interface UploadZoneProps {
   onUpload: (files: File[]) => void
   accept?: string
 }
 
-export function UploadZone({ onUpload, accept = 'image/*' }: UploadZoneProps) {
+export function UploadZone({ onUpload, accept = PHOTO_ACCEPT }: UploadZoneProps) {
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
-      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'))
+      const files = Array.from(e.dataTransfer.files).filter(f => PHOTO_MIME_TYPES.includes(f.type as (typeof PHOTO_MIME_TYPES)[number]))
       onUpload(files)
     },
     [onUpload]
@@ -20,7 +21,7 @@ export function UploadZone({ onUpload, accept = 'image/*' }: UploadZoneProps) {
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []).filter(f => f.type.startsWith('image/'))
+      const files = Array.from(e.target.files || []).filter(f => PHOTO_MIME_TYPES.includes(f.type as (typeof PHOTO_MIME_TYPES)[number]))
       onUpload(files)
       e.target.value = ''
     },
@@ -46,7 +47,7 @@ export function UploadZone({ onUpload, accept = 'image/*' }: UploadZoneProps) {
           <ImagePlus className="w-8 h-8 text-gold" />
         </div>
         <p className="text-obsidian font-semibold mb-1">Drop photos here or click to browse</p>
-        <p className="text-fog text-sm">JPG, PNG, HEIC up to 50MB each</p>
+        <p className="text-fog text-sm">JPG, PNG, or WebP up to 25 MB each</p>
       </label>
     </div>
   )

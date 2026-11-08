@@ -7,7 +7,7 @@ import {
   LayoutDashboard,
   Image,
   Upload,
-  ShoppingBag,
+  DollarSign,
   Settings,
   LogOut,
 } from 'lucide-react'
@@ -18,7 +18,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/galleries', label: 'Galleries', icon: Image },
   { href: '/dashboard/uploads', label: 'Uploads', icon: Upload },
-  { href: '/dashboard/store', label: 'Print Store', icon: ShoppingBag },
+  { href: '/dashboard/store', label: 'Sales', icon: DollarSign },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ]
 

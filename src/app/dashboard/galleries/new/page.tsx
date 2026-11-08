@@ -19,11 +19,13 @@ export default function NewGalleryPage() {
   const [clientEmail, setClientEmail] = useState('')
   const [eventDate, setEventDate] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title) return
     setLoading(true)
+    setError('')
 
     try {
       const slug = generateSlug(title)
@@ -39,7 +41,7 @@ export default function NewGalleryPage() {
         router.push(`/dashboard/galleries/${gallery.id}`)
       }
     } catch (err) {
-      console.error(err)
+      setError(err instanceof Error ? err.message : 'Unable to create the gallery.')
     } finally {
       setLoading(false)
     }
@@ -88,6 +90,7 @@ export default function NewGalleryPage() {
             onChange={e => setEventDate(e.target.value)}
           />
 
+          {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
           <div className="flex items-center gap-3 pt-4">
             <Button type="submit" loading={loading}>Create Gallery</Button>
             <Link href="/dashboard/galleries">

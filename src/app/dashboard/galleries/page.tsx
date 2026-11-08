@@ -5,19 +5,17 @@ import { Card } from '@/src/components/ui/Card'
 import { Badge } from '@/src/components/ui/Badge'
 import { Button } from '@/src/components/ui/Button'
 import { useGallery } from '@/src/hooks/useGallery'
-import { useAuth } from '@/src/hooks/useAuth'
 import { useSubscription } from '@/src/hooks/useSubscription'
 import { formatDate } from '@/src/lib/utils'
-import { Image, Plus, ExternalLink, Trash2 } from 'lucide-react'
+import { Image as GalleryIcon, Plus, ExternalLink, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 
 export default function GalleriesPage() {
   const { galleries, isLoading, deleteGallery } = useGallery()
-  const { tier } = useAuth()
 
-  const handleDelete = async (gallery: any) => {
+  const handleDelete = async (gallery: (typeof galleries)[number]) => {
     if (!window.confirm(`Delete "${gallery.title}" and all its photos? This cannot be undone.`)) return
-    try { await deleteGallery(gallery.id) } catch (e) { window.alert('Could not delete gallery. Try again.') }
+    try { await deleteGallery(gallery.id) } catch { window.alert('Could not delete gallery. Try again.') }
   }
   const { getGalleryLimit } = useSubscription()
 
@@ -31,7 +29,7 @@ export default function GalleriesPage() {
         subtitle="Manage and share your client galleries"
         action={
           <Link href={atLimit ? '/dashboard/settings?tab=billing' : '/dashboard/galleries/new'}>
-            <Button disabled={atLimit}><Plus className="w-4 h-4" /> New Gallery</Button>
+            <Button><Plus className="w-4 h-4" /> {atLimit ? 'Upgrade for More' : 'New Gallery'}</Button>
           </Link>
         }
       />
@@ -52,7 +50,7 @@ export default function GalleriesPage() {
         </div>
       ) : galleries.length === 0 ? (
         <Card className="p-16 text-center">
-          <Image className="w-16 h-16 text-stone mx-auto mb-4" />
+          <GalleryIcon className="w-16 h-16 text-stone mx-auto mb-4" />
           <h3 className="text-xl font-bold text-obsidian mb-2">No galleries yet</h3>
           <p className="text-fog mb-6">Create your first client gallery to get started.</p>
           <Link href="/dashboard/galleries/new">

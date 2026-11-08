@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabaseBrowser } from '@/src/lib/supabase'
 import { Photographer } from '@/src/types'
 
@@ -8,41 +8,46 @@ export function useAuth() {
   const [photographer, setPhotographer] = useState<Photographer | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabaseBrowser.auth.getSession()
-      if (session?.user) {
-        const { data } = await supabaseBrowser
-          .from('photographers')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-        setPhotographer(data as Photographer)
-      }
+  const refresh = useCallback(async () => {
+    const { data: { user } } = await supabaseBrowser.auth.getUser()
+    if (!user) {
+      setPhotographer(null)
       setIsLoading(false)
+      return
     }
-    getSession()
-
-    const { data: { subscription } } = supabaseBrowser.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          const { data } = await supabaseBrowser
-            .from('photographers')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
-          setPhotographer(data as Photographer)
-        } else {
-          setPhotographer(null)
-        }
-        setIsLoading(false)
-      }
-    )
-
-    return () => subscription.unsubscribe()
+    const { data } = await supabaseBrowser
+      .from('photographers')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle()
+    setPhotographer((data as Photographer | null) || null)
+    setIsLoading(false)
   }, [])
 
-  const tier = photographer?.subscription_tier || 'free'
+  useEffect(() => {
+    let active = true
+    const timers = new Set<number>()
+    const scheduleRefresh = () => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer)
+        if (active) void refresh()
+      }, 0)
+      timers.add(timer)
+    }
+    scheduleRefresh()
+    const { data: { subscription } } = supabaseBrowser.auth.onAuthStateChange(scheduleRefresh)
+    return () => {
+      active = false
+      timers.forEach(timer => window.clearTimeout(timer))
+      subscription.unsubscribe()
+    }
+  }, [refresh])
+
+  const storedTier = photographer?.subscription_tier || 'free'
+  const hasActivePlan = storedTier === 'free'
+    ? photographer?.subscription_status !== 'unpaid'
+    : ['active', 'trialing'].includes(photographer?.subscription_status || '')
+  const tier = hasActivePlan ? storedTier : 'free'
   const isPro = tier === 'pro' || tier === 'studio' || tier === 'agency'
   const isStudio = tier === 'studio' || tier === 'agency'
   const isAgency = tier === 'agency'
@@ -55,5 +60,7 @@ export function useAuth() {
     isPro,
     isStudio,
     isAgency,
+    hasActivePlan,
+    refresh,
   }
 }

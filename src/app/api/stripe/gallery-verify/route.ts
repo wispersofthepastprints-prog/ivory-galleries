@@ -10,39 +10,32 @@ export async function GET(req: NextRequest) {
 
   const session = await stripe.checkout.sessions.retrieve(sessionId)
   const galleryId = session.metadata?.gallery_id
-  if (
-    session.payment_status !== 'paid' ||
-    session.metadata?.type !== 'gallery_unlock' ||
-    session.metadata?.slug !== slug ||
-    !galleryId
-  ) {
-    return NextResponse.redirect(new URL(`/g/${slug}`, req.url))
+  if (session.payment_status !== 'paid' || session.metadata?.type !== 'gallery_unlock' || session.metadata?.slug !== slug || !galleryId) {
+    return NextResponse.redirect(new URL(`/g/${encodeURIComponent(slug)}`, req.url))
   }
 
   const { data: gallery } = await supabaseAdmin
     .from('galleries')
-    .select('id')
+    .select('id, expiry_date')
     .eq('id', galleryId)
     .eq('slug', slug)
     .eq('status', 'published')
     .maybeSingle()
-
-  if (!gallery) return NextResponse.redirect(new URL(`/g/${slug}`, req.url))
+  if (!gallery || (gallery.expiry_date && new Date(gallery.expiry_date) < new Date())) {
+    return NextResponse.redirect(new URL(`/g/${encodeURIComponent(slug)}`, req.url))
+  }
 
   const { error: purchaseError } = await supabaseAdmin.from('gallery_purchases').upsert({
     gallery_id: galleryId,
-    email: session.customer_details?.email || 'unknown',
+    email: session.customer_details?.email || 'not supplied',
     amount_cents: session.amount_total ?? 0,
     stripe_session_id: sessionId,
   }, { onConflict: 'stripe_session_id' })
-
-  if (purchaseError) {
-    return NextResponse.json({ error: 'Unable to record gallery purchase' }, { status: 500 })
-  }
+  if (purchaseError) return NextResponse.json({ error: 'Unable to record gallery purchase' }, { status: 500 })
 
   try {
     const { token, maxAge } = await issueGalleryAccess(galleryId, 'purchase')
-    const res = NextResponse.redirect(new URL(`/g/${slug}`, req.url))
+    const res = NextResponse.redirect(new URL(`/g/${encodeURIComponent(slug)}`, req.url))
     res.cookies.set(`unlocked_${galleryId}`, token, {
       httpOnly: true,
       secure: true,

@@ -36,9 +36,10 @@ export function useUpload() {
         setQueue(prev =>
           prev.map(i => (i.id === item.id ? { ...i, status: 'complete', progress: 100 } : i))
         )
-      } catch (err: any) {
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Upload failed'
         setQueue(prev =>
-          prev.map(i => (i.id === item.id ? { ...i, status: 'error', error: err.message } : i))
+          prev.map(i => (i.id === item.id ? { ...i, status: 'error', error: message } : i))
         )
       }
     }
