@@ -1,12 +1,14 @@
+import Link from 'next/link'
+
 export default function Page() {
   return (
     <main style={{maxWidth:760, margin:'0 auto', padding:'48px 20px 80px', fontFamily:'system-ui, sans-serif', color:'#2B2B2B', lineHeight:1.7}}>
-      <a href="/" style={{color:'#C9A227', textDecoration:'none', fontWeight:600}}>&larr; Back to Ivory Galleries</a>
+      <Link href="/" style={{color:'#C9A227', textDecoration:'none', fontWeight:600}}>&larr; Back to Ivory Galleries</Link>
       <h1 style={{fontSize:32, margin:'20px 0 4px'}}>Terms of Service</h1>
-      <p style={{color:'#8A857A', fontSize:14, marginBottom:28}}>Ivory Galleries by Whispers of the Past &middot; Last updated: September 2026</p>
+      <p style={{color:'#8A857A', fontSize:14, marginBottom:28}}>Ivory Galleries by Whispers of the Past &middot; Last updated: November 2026</p>
       
       <h2>1. The Service</h2>
-      <p>Ivory Galleries provides online photo gallery hosting, client delivery, and per-gallery unlock payments for professional photographers, operated by Whispers of the Past (ABN 28 489 379 023).</p>
+      <p>Ivory Galleries provides online photo gallery hosting, client delivery, and per-gallery unlock payments on Studio plans for professional photographers, operated by Whispers of the Past (ABN 28 489 379 023).</p>
       <h2>2. Your Content</h2>
       <p>You retain 100% ownership of your photographs. You grant us only the technical rights needed to store, display, and deliver them as you direct. You warrant you have the rights to upload all content. Galleries unlock payments are priced by you; you keep your margin minus Stripe processing fees.</p>
       <h2>3. Acceptable Use</h2>
