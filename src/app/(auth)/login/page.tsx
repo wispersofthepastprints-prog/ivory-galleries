@@ -7,7 +7,6 @@ import { Input } from '@/src/components/ui/Input'
 import { Card } from '@/src/components/ui/Card'
 import { supabaseBrowser } from '@/src/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
 
 export default function LoginPage() {
   const router = useRouter()
