@@ -112,9 +112,9 @@ function SettingsContent() {
       {activeTab === 'general' && (
         <div className="max-w-2xl space-y-6">
           <Card className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-charcoal border border-stone flex items-center justify-center text-xl font-bold text-ivory">{(photographer?.business_name || 'S').slice(0, 1).toUpperCase()}</div>
-              <div><h2 className="font-bold text-obsidian">{photographer?.business_name || 'Your Studio'}</h2><p className="text-fog text-sm">{photographer?.email}</p><Badge text={tier.toUpperCase()} variant={isStudio ? 'studio' : isPro ? 'pro' : 'default'} size="sm" className="mt-1" /></div>
+            <div className="flex items-start gap-4">
+              <div className="w-16 h-16 shrink-0 rounded-full bg-charcoal border border-stone flex items-center justify-center text-xl font-bold text-ivory">{(photographer?.business_name || 'S').slice(0, 1).toUpperCase()}</div>
+              <div className="min-w-0"><h2 className="break-words font-bold text-obsidian">{photographer?.business_name || 'Your Studio'}</h2><p className="break-all text-fog text-sm">{photographer?.email}</p><Badge text={tier.toUpperCase()} variant={isStudio ? 'studio' : isPro ? 'pro' : 'default'} size="sm" className="mt-1" /></div>
             </div>
           </Card>
           {photographer && <BrandingForm key={`${photographer.id}-${photographer.updated_at}`} photographer={photographer} canCustomise={isPro} onSaved={refresh} />}
@@ -124,9 +124,9 @@ function SettingsContent() {
       {activeTab === 'billing' && (
         <div className="max-w-2xl">
           <Card className="p-6 mb-6">
-            <div className="flex items-center justify-between mb-4"><div><h2 className="font-bold text-obsidian">Current Plan</h2><p className="text-fog text-sm">Manage your subscription</p></div><Badge text={tier.toUpperCase()} variant={isStudio ? 'studio' : isPro ? 'pro' : 'default'} /></div>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3"><div><h2 className="font-bold text-obsidian">Current Plan</h2><p className="text-fog text-sm">Manage your subscription</p></div><Badge text={tier.toUpperCase()} variant={isStudio ? 'studio' : isPro ? 'pro' : 'default'} /></div>
             {!isStudio && (
-              <div className="mb-4"><span className="text-sm text-fog block mb-2">Billing period</span><div className="inline-flex rounded-lg border border-stone/30 overflow-hidden">{(['monthly', 'yearly'] as const).map(period => <button type="button" key={period} onClick={() => setBilling(period)} className={`min-h-11 px-4 py-2 text-sm font-medium transition-colors ${billing === period ? 'bg-gold text-obsidian' : 'text-fog hover:text-obsidian'}`}>{period === 'monthly' ? 'Monthly' : 'Yearly — save 2 months'}</button>)}</div></div>
+              <div className="mb-4"><span className="text-sm text-fog block mb-2">Billing period</span><div className="flex w-full flex-col overflow-hidden rounded-lg border border-stone/30 sm:inline-flex sm:w-auto sm:flex-row">{(['monthly', 'yearly'] as const).map(period => <button type="button" key={period} onClick={() => setBilling(period)} className={`flex min-h-11 items-center justify-center px-4 py-2 text-center text-sm font-medium transition-colors ${billing === period ? 'bg-gold text-obsidian' : 'text-fog hover:text-obsidian'}`}>{period === 'monthly' ? 'Monthly' : 'Yearly — save 2 months'}</button>)}</div></div>
             )}
             <div className="flex flex-wrap gap-3">
               {!isPro && <Button onClick={() => startCheckout('pro')}>Upgrade to Pro</Button>}
